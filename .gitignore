@@ -1,0 +1,12 @@
+*.fastq
+*.sam
+*.bam
+*.bai
+*.sra
+*.ht2
+*.fa
+*.fasta
+*.gtf
+*.zip
+*.html
+*.json

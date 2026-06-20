@@ -37,21 +37,21 @@ The analysis was performed on Ubuntu Linux using standard bioinformatics tools a
 
 ## Results Summary
 
-After filtering low-expression genes:
-
 | Metric                  | Value |
 | ----------------------- | ----- |
-| Total genes analyzed    | 9868  |
-| Upregulated genes       | 364   |
-| Downregulated genes     | 404   |
-| Total significant genes | 768   |
+| Total genes analyzed    | 13336 |
+| Upregulated genes       | 7     |
+| Downregulated genes     | 23    |
+| Total significant genes | 30    |
 
-High-confidence differentially expressed genes:
+Significant genes were identified using a threshold-based hypothesis test
+(DESeq2's `lfcThreshold`), which tests directly against a fold-change
+threshold rather than filtering post-hoc:
+* lfcThreshold = log2(1) (1.5x fold change)
+* altHypothesis = "greaterAbs"
+* Adjusted p-value (padj) < 0.05
 
-* Adjusted p-value < 0.05
-* |Log2 Fold Change| > 1
-
-**Significant genes identified: 167**
+**Significant genes identified: 30**
 
 ---
 
@@ -91,6 +91,11 @@ results/
 ```
 
 ---
+
+## Analysis Script
+The complete R script used for this analysis (DESeq2 differential
+expression testing, filtering, and all visualizations) is available here:
+[deseq2_analysis.R](deseq2_analysis.R)
 
 ## Software and Tools
 

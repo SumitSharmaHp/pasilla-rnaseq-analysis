@@ -4,6 +4,7 @@
 library(DESeq2)
 library(ggplot2)
 library(pheatmap)
+library(ashr)
 
 ## ---- Load count matrix from featureCounts output ----
 counts <- read.table("results/pasilla_counts.txt",
@@ -30,7 +31,11 @@ dds$condition <- relevel(dds$condition, ref = "untreated")
 dds <- DESeq(dds)
 
 ## ---- Filter low-expression genes ----
-dds_filtered <- dds[rowSums(counts(dds)) > 1, ]
+## A minimal >1 filter barely removes anything; requiring at least 10 total
+## reads across samples is the more standard practice (as used in the DESeq2
+## vignette) and prevents noisy low-count genes from distorting dispersion
+## estimation and the downstream test.
+dds_filtered <- dds[rowSums(counts(dds)) >= 10, ]
 dds_filtered <- DESeq(dds_filtered)
 
 ## ---- Threshold-based hypothesis testing ----
@@ -44,6 +49,14 @@ res <- results(dds_filtered,
 		lfcThreshold = 1,
 		altHypothesis = "greaterAbs",
 		alpha = 0.05)
+
+## ---- Shrink fold-change estimates ----
+## Raw (MLE) log2FoldChange values are noisy for low-count genes and can
+## look artificially extreme. lfcShrink moderates these estimates while
+## keeping the same p-values/padj from the threshold test above, giving
+## more reliable fold-change values for plotting and ranking.
+res <- lfcShrink(dds_filtered, contrast = c("condition", "treated", "untreated"),
+			res = res, type = "ashr")
 
 ## ---- Save full results ----
 res_df <- as.data.frame(res)
@@ -67,7 +80,7 @@ write.csv(top20, "results/Top20_DEGs.csv", row.names = FALSE)
 ## ===================================================
 ## Volcano Plot
 ## ===================================================
-ggplot(res_df, aes(x = log2FoldChange, y = -log10(pvalue), color = significant)) +
+ggplot(res_df, aes(x = log2FoldChange, y = -log10(padj), color = significant)) +
 	geom_point(size = 1.5, alpha = 0.7) +
 	geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "gray") +
 	geom_vline(xintercept = c(-1, 1), linetype = "dashed", color = "gray") +

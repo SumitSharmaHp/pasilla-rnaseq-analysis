@@ -37,21 +37,19 @@ The analysis was performed on Ubuntu Linux using standard bioinformatics tools a
 
 ## Results Summary
 
-| Metric                  | Value |
-| ----------------------- | ----- |
-| Total genes analyzed    | 13336 |
-| Upregulated genes       | 7     |
+| Total genes analyzed    | 9868  |
+| Upregulated genes       | 9     |
 | Downregulated genes     | 23    |
-| Total significant genes | 30    |
+| Total significant genes | 32    |
 
 Significant genes were identified using a threshold-based hypothesis test
 (DESeq2's `lfcThreshold`), which tests directly against a fold-change
 threshold rather than filtering post-hoc:
-* lfcThreshold = log2(1) (1.5x fold change)
+* lfcThreshold = 1 (2-fold change)
 * altHypothesis = "greaterAbs"
 * Adjusted p-value (padj) < 0.05
 
-**Significant genes identified: 30**
+**Significant genes identified: 32**
 
 ---
 
